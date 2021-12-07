@@ -82,9 +82,15 @@ in order to use the api in document format you can simply head to this url
 
 http://127.0.0.1:8000/swagger/
 
+<img src="https://user-images.githubusercontent.com/29748439/145015922-9f1d4717-796d-40db-8763-be303ef59bd0.png" alt="database schema" width="720"/>
+</p>
+
+
 or if you prefer redoc you can use :
 
 http://127.0.0.1:8000/redoc/
+
+<img src="https://user-images.githubusercontent.com/29748439/145016099-db5ffdfe-7911-4af8-88c8-6df19031b925.png" alt="database schema" width="720"/>
 
 and for importing the api into your postman the link for that will be this:
 
@@ -102,7 +108,7 @@ black -l 79 . && flake8
 ### Database schema
 A simple view of the project model schema.
 <p align="center">
-<img src="" alt="database schema" width="300"/>
+<img src="https://user-images.githubusercontent.com/29748439/145015815-378fd529-74f9-49f2-9856-2db6f228e3b7.png" alt="database schema" width="300"/>
 </p>
 
 ### Todo
