@@ -82,6 +82,7 @@ in order to use the api in document format you can simply head to this url
 
 http://127.0.0.1:8000/swagger/
 
+<p align="center">
 <img src="https://user-images.githubusercontent.com/29748439/145015922-9f1d4717-796d-40db-8763-be303ef59bd0.png" alt="database schema" width="720"/>
 </p>
 
@@ -89,9 +90,9 @@ http://127.0.0.1:8000/swagger/
 or if you prefer redoc you can use :
 
 http://127.0.0.1:8000/redoc/
-
+<p align="center">
 <img src="https://user-images.githubusercontent.com/29748439/145016099-db5ffdfe-7911-4af8-88c8-6df19031b925.png" alt="database schema" width="720"/>
-
+</p>
 and for importing the api into your postman the link for that will be this:
 
 http://127.0.0.1:8000/swagger/api.json
