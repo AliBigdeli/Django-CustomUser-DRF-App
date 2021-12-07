@@ -117,7 +117,6 @@ A simple view of the project model schema.
 ### Todo
 - [x] complete the documentation
 - [ ] add api tests
-- [ ] add one click deploy mechanism
 - [ ] create a video tutorial
 
 ### Bugs or Opinion
