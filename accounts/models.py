@@ -56,10 +56,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.email
 
     @property
-    def username(self):
-        return (self.email.split("@"))[0]
-
-    @property
     def fullname(self):
         return f"{self.first_name} {self.last_name}"
 
