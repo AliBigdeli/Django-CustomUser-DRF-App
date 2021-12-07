@@ -26,12 +26,14 @@
 - Django LTS
 - Custom User Model
 - Profile model
-- signal attachments
+- Signal attachments
 - Django RestFramework
-- User authentication
+- Token Authentication
+- JWT Authentication
+- APi Docs
 - Black
 - Flake8
-- tests
+- Tests
 
 ### Setup
 To get this repository, run the following command inside your git enabled terminal
