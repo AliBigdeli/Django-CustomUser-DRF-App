@@ -21,9 +21,9 @@ from drf_yasg import openapi
 
 schema_view = get_schema_view(
    openapi.Info(
-      title="Advanced Django API",
+      title="CustomUser Django API",
       default_version='v1',
-      description="a Sample Project to teach using django restframework",
+      description="A Base authentication app with custom user model",
       terms_of_service="https://www.google.com/policies/terms/",
       contact=openapi.Contact(email="bigdeli.ali3@gmail.com"),
       license=openapi.License(name="MIT License"),
