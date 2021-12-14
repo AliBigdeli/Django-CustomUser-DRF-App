@@ -8,10 +8,10 @@ class UserAdminConfig(UserAdmin):
     search_fields = ("email",)
     list_filter = ("email", "is_active", "is_staff")
     ordering = ("-created_date",)
-    list_display = ("email", "is_active", "is_staff")
+    list_display = ("email", "is_active", "is_staff","is_verified")
     fieldsets = (
         ("Authentication", {"fields": ("email",)}),
-        ("Permissions", {"fields": ("is_staff", "is_active")}),
+        ("Permissions", {"fields": ("is_staff", "is_active","is_verified")}),
         (
             "Group Permissions",
             {
@@ -34,6 +34,7 @@ class UserAdminConfig(UserAdmin):
                     "password2",
                     "is_active",
                     "is_staff",
+                    "is_verified"
                 ),
             },
         ),

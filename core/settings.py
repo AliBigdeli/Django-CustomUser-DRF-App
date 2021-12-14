@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",    
     "rest_framework",
+    'django_rest_passwordreset',
     "rest_framework.authtoken",
     "rest_framework_simplejwt",
     "drf_yasg",
@@ -143,6 +144,13 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = "accounts.User"
 AUTH_PROFILE_MODULE = "accounts.User"
+
+
+# Email Configurations for development
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+EMAIL_HOST = "localhost"
+EMAIL_PORT = 1025
+
 
 # rest framework settings
 REST_FRAMEWORK = {
