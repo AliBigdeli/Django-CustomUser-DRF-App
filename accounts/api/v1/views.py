@@ -2,6 +2,7 @@ from rest_framework.response import Response
 from rest_framework import generics, status, views, mixins
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
+from rest_framework.serializers import Serializer
 from .serializers import *
 from accounts.models import Profile
 import jwt
@@ -14,7 +15,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.urls import reverse
 from rest_framework.authtoken.models import Token
 from rest_framework_simplejwt.views import TokenObtainPairView
-
+from rest_framework_simplejwt.tokens import RefreshToken
 
 class RegisterApiView(generics.GenericAPIView):
 
@@ -107,21 +108,18 @@ class ObtainTokenApiView(generics.CreateAPIView):
     serializer_class = ObtainTokenSerializer
 
     def create(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data)
-        if serializer.is_valid():
-            print(serializer.validated_data)
-            if Token.objects.filter(user=serializer.validated_data["instance"]).exists():
-                token = Token.objects.get(
-                    user=serializer.validated_data["instance"])
-            else:
-                token = Token.objects.create(
-                    user=serializer.validated_data["instance"])
-            return Response({"token": token.key})
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer = self.serializer_class(data=request.data,
+                                           context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({
+            'token': token.key,
+            'user_id': user.pk,
+            'email': user.email
+        })
 
-
-class DiscardAuthToken(views.APIView):
+class DiscardAuthTokenApiView(views.APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
@@ -137,6 +135,24 @@ class TokenObtainPairPatchedView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
 
     token_obtain_pair = TokenObtainPairView.as_view()
+
+
+class JWTObtainPairTokenApiView(generics.CreateAPIView):
+    serializer_class = JWTObtainPairTokenSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data,
+                                           context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        refresh = RefreshToken.for_user(user)
+        return Response({
+            'access': str(refresh.access_token),
+            'refresh': str(refresh),
+            'user_id': user.pk,
+            'email': user.email
+        })
+
 
 class ResendVerifyEmailApiView(generics.GenericAPIView):
 
