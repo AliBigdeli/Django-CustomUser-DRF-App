@@ -4,10 +4,7 @@ from django.contrib.auth.base_user import BaseUserManager
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db import models
-from django.urls import reverse
-from django_rest_passwordreset.signals import reset_password_token_created
-from django.core.mail import send_mail
-from .api.utils import Util
+
 
 
 class UserManager(BaseUserManager):
@@ -88,12 +85,3 @@ class Profile(models.Model):
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(user=instance)
-
-
-@receiver(reset_password_token_created)
-def password_reset_token_created(sender, instance, reset_password_token, *args, **kwargs):
-    email_plaintext_message = "{}?token={}".format(reverse(
-        'accounts:reset-password:reset-password-confirm'), reset_password_token.key)
-    data = {'email_body': email_plaintext_message, 'to_email': reset_password_token.user.email,
-            'email_subject': "Password Reset for {title}".format(title="Some website title")}
-    Util.send_email(data)
