@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",    
     "rest_framework",
-    'django_rest_passwordreset',
     "rest_framework.authtoken",
     "rest_framework_simplejwt",
     "drf_yasg",

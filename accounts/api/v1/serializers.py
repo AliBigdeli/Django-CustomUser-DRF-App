@@ -6,7 +6,8 @@ from django.contrib.auth import get_user_model
 from django.contrib import auth
 from rest_framework.exceptions import AuthenticationFailed
 from django.shortcuts import get_object_or_404
-
+import jwt
+from django.conf import settings
 
 class RegisterSerializer(serializers.ModelSerializer):
     """Registration serializer with password checkup"""
@@ -170,3 +171,51 @@ class ResendVerifyTokenSerializer(serializers.ModelSerializer):
             )
         attrs["instance"] = user
         return attrs
+
+
+class PasswordResetRequestEmailSerializer(serializers.Serializer):
+    email = serializers.EmailField(min_length=2)
+
+    class Meta:
+        fields = ['email']
+    
+    def validate(self, attrs):
+        try:
+            user = User.objects.get(email=attrs["email"])
+        except User.DoesNotExist:
+            raise ValidationError({"detail":"There is no user with provided email"})
+        attrs["user"] = user
+        return super().validate(attrs)
+
+class PasswordResetTokenVerificationSerializer(serializers.ModelSerializer):
+    token = serializers.CharField(max_length=600)
+    class Meta:
+        model = User
+        fields = ['token']
+
+class SetNewPasswordSerializer(serializers.Serializer):
+    token = serializers.CharField(max_length=600) 
+    password = serializers.CharField(
+        min_length=6, max_length=68, write_only=True)
+    password1 = serializers.CharField(
+        min_length=6, max_length=68, write_only=True)
+    class Meta:
+        fields = ['password','password1', 'token']
+
+    def validate(self, attrs):
+        if attrs["password"] != attrs["password1"]:
+            raise serializers.ValidationError(
+                {"details": "Passwords does not match"}
+            )
+        try:
+            password = attrs.get('password')
+            token = attrs.get('token')
+            payload = jwt.decode(
+                token, settings.SECRET_KEY, algorithms=['HS256'])
+            user = User.objects.get(id=payload['user_id'])
+            user.set_password(password)
+            user.save()
+
+            return super().validate(attrs)
+        except Exception as e:
+            raise AuthenticationFailed('The reset link is invalid', 401)

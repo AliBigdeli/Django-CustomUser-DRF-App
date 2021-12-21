@@ -9,7 +9,6 @@ markdown
 django-filter
 django-decouple
 django-cors-headers
-django-rest-passwordreset
 
 # linting and test packages
 flake8
