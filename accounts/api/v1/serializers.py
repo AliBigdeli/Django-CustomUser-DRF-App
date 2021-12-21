@@ -53,6 +53,14 @@ class ChangePasswordSerializer(serializers.Serializer):
     """
     old_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)
+    new_password1 = serializers.CharField(required=True)
+
+    def validate(self, data):
+        if data["new_password"] != data["new_password1"]:
+            raise serializers.ValidationError(
+                {"details": "Passwords does not match"}
+            )
+        return data
 
 
 class EmailVerificationSerializer(serializers.ModelSerializer):

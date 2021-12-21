@@ -28,7 +28,7 @@ class RegisterApiView(generics.GenericAPIView):
             user = User.objects.get(email=serializer.validated_data['email'])
             token = RefreshToken.for_user(user).access_token
             current_site = get_current_site(request).domain
-            relativeLink = reverse('accounts:email-verify')
+            relativeLink = reverse('accounts:email_verify')
             absurl = 'http://'+current_site+relativeLink+"?token="+str(token)
             email_body = 'Hi '+user.email + \
                 ' Use the link below to verify your email \n' + absurl
@@ -127,15 +127,6 @@ class DiscardAuthTokenApiView(views.APIView):
         return Response({"details": "token successfully removed"}, status=status.HTTP_200_OK)
 
 
-class TokenObtainPairPatchedView(TokenObtainPairView):
-    """
-    Takes a set of user credentials and returns an access and refresh JSON web
-    token pair to prove the authentication of those credentials.
-    """
-    serializer_class = CustomTokenObtainPairSerializer
-
-    token_obtain_pair = TokenObtainPairView.as_view()
-
 
 class JWTObtainPairTokenApiView(generics.CreateAPIView):
     serializer_class = JWTObtainPairTokenSerializer
@@ -164,7 +155,7 @@ class ResendVerifyEmailApiView(generics.GenericAPIView):
             user = serializer.validated_data["instance"]
             token = RefreshToken.for_user(user).access_token
             current_site = get_current_site(request).domain
-            relativeLink = reverse('accounts:email-verify')
+            relativeLink = reverse('accounts:email_verify')
             absurl = 'http://'+current_site+relativeLink+"?token="+str(token)
             email_body = 'Hi '+user.email + \
                 ' Use the link below to verify your email \n' + absurl
