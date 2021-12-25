@@ -30,16 +30,17 @@ class RegisterApiView(generics.GenericAPIView):
             current_site = get_current_site(request).domain
             relativeLink = reverse('accounts:email_verify')
             absurl = 'http://'+current_site+relativeLink+"?token="+str(token)
-            email_body = 'Hi '+user.email + \
-                ' Use the link below to verify your email \n' + absurl
-            data = {'email_body': email_body, 'to_email': user.email,
-                    'email_subject': 'Verify your email'}
-
-            Util.send_email(data)
+            # email_body = 'Hi '+user.email + \
+            #     ' Use the link below to verify your email \n' + absurl
+            # data = {'email_body': email_body, 'to_email': user.email,
+            #         'email_subject': 'Verify your email'}
+            #  Util.send_email(data)
+            data = {'email':user.email,"link":absurl,"site":current_site}
+            Util.send_templated_email('emails/verification_template.html',data)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-class VerifyEmailApiView(mixins.RetrieveModelMixin, generics.GenericAPIView):
+class VerifyEmailApiView(generics.GenericAPIView):
     serializer_class = EmailVerificationSerializer
     
     def post(self, request):
@@ -147,12 +148,15 @@ class ResendVerifyEmailApiView(generics.GenericAPIView):
             current_site = get_current_site(request).domain
             relativeLink = reverse('accounts:email_verify')
             absurl = 'http://'+current_site+relativeLink+"?token="+str(token)
-            email_body = 'Hi '+user.email + \
-                ' Use the link below to verify your email \n' + absurl
-            data = {'email_body': email_body, 'to_email': user.email,
-                    'email_subject': 'Verify your email'}
-
-            Util.send_email(data)
+            # email_body = 'Hi '+user.email + \
+            #     ' Use the link below to verify your email \n' + absurl
+            # data = {'email_body': email_body, 'to_email': user.email,
+            #         'email_subject': 'Verify your email'}
+            # data = {'email':user.email,"link":absurl,"site":current_site}
+            #  Util.send_email(data)
+            data = {'email':user.email,"link":absurl,"site":current_site}
+            Util.send_templated_email('emails/verification_template.html',data)
+           
             return Response({"details":"verification mail has been sent"}, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -166,36 +170,29 @@ class PasswordResetRequestEmailApiView(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data["user"]
         token = RefreshToken.for_user(user).access_token
-        relativeLink = "/path-to-url/" #reverse('accounts:password-reset-confirm')
+        relativeLink = "/accounts/reset-password" #reverse('accounts:password-reset-confirm')
         current_site = get_current_site(
             request=request).domain
         absurl = 'http://'+current_site+relativeLink+"?token="+str(token)
-        email_body = 'Hi '+user.email + \
-                'Use the link below to reset your password \n' + absurl
-        data = {'email_body': email_body, 'to_email': user.email,
-                    'email_subject': 'Verify your email'}
+        # email_body = 'Hi '+user.email + \
+        #         'Use the link below to reset your password \n' + absurl
+        # data = {'email_body': email_body, 'to_email': user.email,
+        #             'email_subject': 'Verify your email'}
 
-        Util.send_email(data)
+        # Util.send_email(data)
+        data = {'email':user.email,"link":absurl,"site":current_site}
+        Util.send_templated_email('emails/reset_password_template.html',data)
         return Response({'success': 'We have sent you a link to reset your password'}, status=status.HTTP_200_OK)
 
 
 class PasswordResetTokenValidateApiView(mixins.RetrieveModelMixin, generics.GenericAPIView):
     serializer_class = PasswordResetTokenVerificationSerializer
-    token_param_config = openapi.Parameter(
-        'token', in_=openapi.IN_QUERY, description='valid token to verify email', type=openapi.TYPE_STRING)
 
-    @swagger_auto_schema(manual_parameters=[token_param_config])
-    def get(self, request):
-        token = request.GET.get('token')
-        try:
-            payload = jwt.decode(
-                token, settings.SECRET_KEY, algorithms=['HS256'])
-            user = User.objects.get(id=payload['user_id'])
-            return Response({'detail': 'Token is valid'}, status=status.HTTP_200_OK)
-        except jwt.ExpiredSignatureError as identifier:
-            return Response({'detail': 'Token is Expired'}, status=status.HTTP_400_BAD_REQUEST)
-        except jwt.exceptions.DecodeError as identifier:
-            return Response({'detail': 'Token is invalid'}, status=status.HTTP_400_BAD_REQUEST)
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        return Response({"detail":"Token is valid"},status=status.HTTP_200_OK)
 
 
 class PasswordResetSetNewApiView(generics.GenericAPIView):

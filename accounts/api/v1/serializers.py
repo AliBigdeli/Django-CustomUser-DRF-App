@@ -9,14 +9,21 @@ from django.shortcuts import get_object_or_404
 import jwt
 from django.conf import settings
 
+
 class RegisterSerializer(serializers.ModelSerializer):
     """Registration serializer with password checkup"""
 
     password = serializers.CharField(
-        max_length=68, min_length=6, write_only=True
+        max_length=68, min_length=6, write_only=True, required=True,
+        style={
+            'input_type': 'password',
+        }
     )
     password1 = serializers.CharField(
-        max_length=68, min_length=6, write_only=True
+        max_length=68, min_length=6, write_only=True, required=True,
+        style={
+            'input_type': 'password',
+        }
     )
 
     class Meta:
@@ -192,14 +199,16 @@ class PasswordResetRequestEmailSerializer(serializers.Serializer):
 
     class Meta:
         fields = ['email']
-    
+
     def validate(self, attrs):
         try:
             user = User.objects.get(email=attrs["email"])
         except User.DoesNotExist:
-            raise ValidationError({"detail":"There is no user with provided email"})
+            raise ValidationError(
+                {"detail": "There is no user with provided email"})
         attrs["user"] = user
         return super().validate(attrs)
+
 
 class PasswordResetTokenVerificationSerializer(serializers.ModelSerializer):
     token = serializers.CharField(max_length=600)
@@ -221,6 +230,7 @@ class PasswordResetTokenVerificationSerializer(serializers.ModelSerializer):
 
         attrs["user"] = user
         return super().validate(attrs)
+
 
 class SetNewPasswordSerializer(serializers.Serializer):
     token = serializers.CharField(max_length=600)

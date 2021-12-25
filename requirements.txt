@@ -9,6 +9,7 @@ markdown
 django-filter
 django-decouple
 django-cors-headers
+django-templated-mail
 
 # linting and test packages
 flake8
@@ -17,3 +18,4 @@ black
 # api docs
 drf-yasg
 drf-yasg[validation]
+

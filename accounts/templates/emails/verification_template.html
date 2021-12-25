@@ -1,0 +1,11 @@
+{% block subject %} New User Verification{% endblock %}
+
+{% block html_body %}
+<h2>Hello {{email}}</h2>
+<p>Use the link below to verify your email:</p>
+<a>{{link}}</a>
+
+<hr>
+<small>best regards</small>
+<small>{{site}}</small>
+{% endblock %}
