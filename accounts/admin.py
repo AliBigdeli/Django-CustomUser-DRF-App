@@ -10,7 +10,7 @@ class UserAdminConfig(UserAdmin):
     ordering = ("-created_date",)
     list_display = ("email", "is_active", "is_staff","is_verified")
     fieldsets = (
-        ("Authentication", {"fields": ("email",)}),
+        ("Authentication", {"fields": ("email","password")}),
         ("Permissions", {"fields": ("is_staff", "is_active","is_verified")}),
         (
             "Group Permissions",
@@ -39,7 +39,7 @@ class UserAdminConfig(UserAdmin):
             },
         ),
     )
-
+    
 
 admin.site.register(User, UserAdminConfig)
 admin.site.register(Profile)
